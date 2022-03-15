@@ -1,23 +1,6 @@
 /// <reference types="cypress"/>
 import signupPage from '../support/pages/signup'
 import loginPage from '../support/pages/login'
-// Cenários:
-
-// 1- Login com sucesso
-// 2- Senha incorreta
-// 3- Email no formato inválido
-// 4- Compos obrigatorios (dois ITSs)
-
-//Dicas
-
-// 1- Para fazzer login, é necessário já ter uma conta cadastrada
-// 2- Usar contexto
-// 3- Para fazer o login com sucesso, você deverá componentizar alguma coisa
-
-// Como entregar 
-
-// Publicar no repositorio do Github
-// Em seguida, colocar o link aqui em baixo nos comentarios
 
 describe('Login', function () {
 
