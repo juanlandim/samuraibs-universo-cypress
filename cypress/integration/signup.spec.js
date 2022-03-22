@@ -34,18 +34,7 @@ describe('Cadastro', function () {
         }
 
         before(function () {
-            cy.task('removeUser', user.email)
-                .then(function (result) {
-                    console.log(result)
-                })
-
-            cy.request(
-                'POST',
-                'http://localhost:3333/users',
-                user
-            ).then(function (response) {
-                expect(response.status).to.eq(200)
-            })
+            cy.postUser(user)
         })
 
         it('Não deve cadastrar o usuário', function () {
@@ -67,7 +56,7 @@ describe('Cadastro', function () {
             signupPage.go()
             signupPage.form(user)
             signupPage.submit()
-            signupPage.alertHaveText('Informe um email válido')
+            signupPage.alert.haveText('Informe um email válido')
         })
 
     })
@@ -96,7 +85,7 @@ describe('Cadastro', function () {
         })
         
        afterEach(function(){
-            signupPage.alertHaveText('Pelo menos 6 caracteres')
+            signupPage.alert.haveText('Pelo menos 6 caracteres')
        })
     })
 
@@ -114,7 +103,7 @@ describe('Cadastro', function () {
 
         alertMessages.forEach(function(alert){
             it('Deve exibir '+ alert.toLocaleLowerCase(), function(){
-                signupPage.alertHaveText(alert)
+                signupPage.alert.haveText(alert)
             })
         })
     })

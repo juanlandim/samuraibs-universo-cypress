@@ -1,70 +1,97 @@
 /// <reference types="cypress"/>
-import signupPage from '../support/pages/signup'
-import loginPage from '../support/pages/login'
+import loginpage from '../support/pages/login'
+import dashpage from '../support/pages/dash'
 
 describe('Login', function () {
 
-    context('Quando o login é com sucesso', function () {
-
+    context('Quando o usuário é muito bom', function () {
         const user = {
-            name: 'Juan Landim',
-            email: 'juanlandim@samuraibs.com',
+            name: 'Robson Jassa',
+            email: 'jassa@samuraibs.com',
             password: 'pwd123',
             is_provider: true
         }
 
-        it('Deve fazer login com sucesso', function () {
-            loginPage.login.userLogin(user)
-            loginPage.validLogin()
+        before(function () {
+            cy.postUser(user)
+        })
+
+        it('Deve logar com sucesso', function () {
+            loginpage.go()
+            loginpage.form(user)
+            loginpage.submit()
+
+            dashpage.header.userLoggedIn(user.name)
         })
     })
 
-    context('Quando a senha é incorreta', function () {
-        const user = {
-            name: 'Juan Landim',
-            email: 'juanlandim@samuraibs.com',
-            password: 'pwd123aa2'
+    context('Quando o usuário é bom mas a senha está incorreta', function(){
+
+        let user = {
+            name: 'Celso Kamura',
+            email: 'kamura@samuraibs.com',
+            password: 'pwd123',
+            is_provider: true
         }
+        before(function(){
+            cy.postUser(user).then(function(){
+                user.password = 'abc123'
+            })         
+        })
 
-        it('Deve retorna mensagem de erro', function () {
-            loginPage.go()
-            loginPage.form(user)
-            loginPage.singIn()
-            loginPage.toast.shouldHaveText('Ocorreu um erro ao fazer login, verifique suas credenciais.')
+        it('Deve notificar erro de credenciais', function(){
+            
+            loginpage.go()
+            loginpage.form(user)
+            loginpage.submit()
+            const message = 'Ocorreu um erro ao fazer login, verifique suas credenciais.'
+            loginpage.toast.shouldHaveText(message)
+        })
+    
+        
+    })
+
+    context('Quando o formato do email é inválido', function(){
+        const emails = [
+            'papito.com.br',
+            'yahoo.com',
+            '@gmail.com',
+            '@',
+            'papito@',
+            '111',
+            '&*^&^&*',
+            'xpto123'
+        ]
+
+        before(function(){
+            loginpage.go()
+        })
+
+        emails.forEach(function(email){
+            it('Não deve logar com o email: ' +email, function(){
+                const user = {email: email, password: 'pwd123'}             
+                loginpage.form(user)
+                loginpage.submit()
+                loginpage.alert.haveText('Informe um email válido')
+            })
         })
     })
 
-    context('Quando o email tem formato inválido', function () {
-        const user = {
-            name: 'Juan Landim',
-            email: 'juanlandim.samuraibs.com',
-            password: 'pwd123'
-        }
-
-        it('Deve retorna mensagem para informar um email valido', function () {
-            loginPage.go()
-            loginPage.form(user)
-            loginPage.singIn()
-            loginPage.alertHaveText('Informe um email válido')
-        })
-    })
-
-    context('Quando não preencho nehum dos campos', function () {
+    context('Quando não preencho nehum dos campos', function(){
         const alertMessages = [
             'E-mail é obrigatório',
             'Senha é obrigatória'
         ]
 
-        before(function () {
-            loginPage.go()
-            loginPage.singIn()
+        before(function(){
+            loginpage.go()
+            loginpage.submit()
         })
 
-        alertMessages.forEach(function (alert) {
-            it('Deve exibir ' + alert.toLocaleLowerCase(), function () {
-                signupPage.alertHaveText(alert)
+        alertMessages.forEach(function(alert){
+            it('Deve exibir '+ alert.toLocaleLowerCase(), function(){
+                loginpage.alert.haveText(alert)
             })
-        })
+        })    
     })
 })
-

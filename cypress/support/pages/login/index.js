@@ -1,10 +1,12 @@
 import { el } from './elements'
 import toast from '../../components/toast'
-import login from '../../components/login'
+import alert from '../../components/alert'
+
 class LoginPage {
-    constructor(){
+
+    constructor() {
         this.toast = toast
-        this.login = login
+        this.alert = alert
     }
 
     go() {
@@ -12,20 +14,12 @@ class LoginPage {
     }
 
     form(user) {
-        cy.get(el.email).type(user.email)
-        cy.get(el.password).type(user.password)
+        cy.get(el.email).clear().type(user.email)
+        cy.get(el.password).clear().type(user.password)
     }
 
-    singIn() {
-        cy.contains(el.loginButton).click()
-    }
-
-    validLogin() {
-        cy.contains(el.messageDash).should('be.visible')
-    }
-
-    alertHaveText(expectedText){
-        cy.contains(el.alertError, expectedText).should('be.visible')
+    submit() {
+        cy.contains(el.signIn).click()
     }
 }
 
