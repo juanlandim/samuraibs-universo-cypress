@@ -15,7 +15,7 @@ class DashPage {
         let today = new Date()
         let lastDayofMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
 
-        if (today.getDate === lastDayofMonth.getDate) {
+        if (today.getDate() === lastDayofMonth.getDate) {
             cy.log('Hoje é último dia do mês')
 
             cy.get(el.nextMonthButton)
